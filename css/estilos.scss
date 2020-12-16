@@ -1,0 +1,29 @@
+/*css*/
+body {
+    background-color: black;
+    color: white;
+    overflow: hidden;
+  }
+  
+  .pala {
+      font-size: 80px;
+      position: absolute;
+      margin: 0;
+      font-weight: 900;
+      
+  }
+  
+  .pelota {
+      font-size: 50px;
+      position: absolute;
+      margin: 0;
+      font-weight: 900;
+  }
+  
+  .marcador {
+      color: yellow;
+      font-size: 100px;
+      position: absolute;
+      margin: 0;
+      z-index: -1;
+  }

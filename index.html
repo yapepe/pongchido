@@ -10,60 +10,81 @@
 </body>
 <script>
     /*javascript*/
+/*javascript*/
+/*javascript*/
 const VELOCIDAD_PALAS = 15
 class Pala {
     constructor(x, y) {
         this.pos = {x, y}
         this.crearElementoDom()
     }
-     crearElementoDom(){
+     crearElementoDom() {
         this.pala = document.createElement('p')
         this.pala.innerHTML = '|'
         this.pala.classList.add('pala')
         this.pala.style.left = this.pos.x + 'px'
         this.pala.style.top = this.pos.y + 'px'
         document.body.appendChild(this.pala)
-    } 
-    
-    actualizarPosY(nuevaPos){
-        if(nuevaPos <= 0) {
-            return
-        }
-        
-        if(nuevaPos >= window.innerHeight-90) {
-            return
-        }
-        
+    }
+    actualizarPosY(nuevaPos) {
+        if(nuevaPos <= 0) return
+        if(nuevaPos >= window.innerHeight - 90) return
         this.pos.y = nuevaPos
         this.pala.style.top = this.pos.y + 'px'
-        
     }
 }
 
-
 class Pelota {
-    constructor(x,y) {
-        this.pos = {x,y}
+    constructor(x, y, vel) {
+        this.pos = {x, y}
+        this.vel = {x:vel, y:vel}
         this.crearElementoDom()
     }
-     crearElementoDom(){
+    crearElementoDom() {
         this.pelota = document.createElement('p')
         this.pelota.innerHTML = 'o'
         this.pelota.classList.add('pelota')
+        this.actualizarCSS()
+        document.body.appendChild(this.pelota)
+    }
+    actualizarPos() {
+        this.pos.x += this.vel.x
+        this.pos.y += this.vel.y
+    }
+    actualizarCSS() {
         this.pelota.style.left = this.pos.x + 'px'
         this.pelota.style.top = this.pos.y + 'px'
-        document.body.appendChild(this.pelota)
+    }
+    checarColisiones() {
+        if(this.pos.y <= 0 || this.pos.y >= window.innerHeight - 50) {
+            this.vel.y *= -1
+        }
+    }
+    checarColisionesConPala(pala) {
+        if(
+          	this.pos.x >= pala.pos.x
+          	&& this.pos.x <= pala.pos.x + 20
+          	&& this.pos.y + 20 >= pala.pos.y  
+          	&& this.pos.y + 20 <= pala.pos.y + 80
+          ) {
+            this.vel.x *= -1
+        }
+    }
+    animar(pala1, pala2) { 
+        this.actualizarPos()
+        this.actualizarCSS()
+        this.checarColisiones()
+        this.checarColisionesConPala(pala1)
+        this.checarColisionesConPala(pala2)
     }
 }
 
-
 class Marcador {
-    constructor(x,y,puntos) {
-        this.pos = {x,y}
+    constructor(x, y, puntos) {
+        this.pos = {x, y}
         this.puntos = puntos
         this.crearElementoDom()
     }
-    
     crearElementoDom(){
         this.marcador = document.createElement('p')
         this.marcador.innerHTML = new String(this.puntos)
@@ -71,39 +92,42 @@ class Marcador {
         this.marcador.style.left = this.pos.x + 'px'
         this.marcador.style.top = this.pos.y + 'px'
         document.body.appendChild(this.marcador)
-		}
-    }
+	}
+}
 
-const pala1 = new Pala(10,100)
-const pala2 = new Pala(window.innerWidth-35,100)
-const pelota1 = new Pelota(100,200)
-const marcador1 = new Marcador(200,0,1)
-const marcador2 = new Marcador(500,0,5)
+const pala1 = new Pala(10, 100)
+const pala2 = new Pala(window.innerWidth - 35, 100)
+const pelota1 = new Pelota(100, 100, 3)
+const marcador1 = new Marcador(200, 0, 0)
+const marcador2 = new Marcador(500, 0, 5)
 
 document.addEventListener('keydown', function(event){
     if(event.keyCode === 87 ){
-            const posYJ1 = pala1.pos.y - VELOCIDAD_PALAS
-            pala1.actualizarPosY(posYJ1)
-        }
+		const posYJ1 = pala1.pos.y - VELOCIDAD_PALAS
+        pala1.actualizarPosY(posYJ1)
+    }
     if(event.keyCode === 83 ){
-            const posYJ1 = pala1.pos.y + VELOCIDAD_PALAS
-            pala1.actualizarPosY(posYJ1)
-        }
-    
+        const posYJ1 = pala1.pos.y + VELOCIDAD_PALAS
+        pala1.actualizarPosY(posYJ1)
+    }
     if(event.keyCode === 104){
-            const posYJ2 = pala2.pos.y - VELOCIDAD_PALAS
-            pala2.actualizarPosY(posYJ2)
-        }
+        const posYJ2 = pala2.pos.y - VELOCIDAD_PALAS
+        pala2.actualizarPosY(posYJ2)
+    }
     if(event.keyCode === 101){
-            const posYJ2 = pala2.pos.y + VELOCIDAD_PALAS
-            pala2.actualizarPosY(posYJ2)
-        }
+        const posYJ2 = pala2.pos.y + VELOCIDAD_PALAS
+        pala2.actualizarPosY(posYJ2)
+    }
 })
 
-/* animacion DVD techo piso 
-    anotar puntos en bordes y reset
+const pala2ColisionBox = {...pala2}
+pala2ColisionBox.pos.x -= 20
+ 
+function main() {   
+    pelota1.animar(pala1, pala2ColisionBox)
+}
+ 
+setInterval(main, 17)  
 
-
- */
 </script>
 </html>
